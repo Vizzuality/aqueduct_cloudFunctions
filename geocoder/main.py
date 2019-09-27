@@ -53,7 +53,7 @@ def get_google_results(address):
 	try:
 		with requests.Session() as s:
 			s.mount('https://',HTTPAdapter(max_retries=Retry(2, backoff_factor=0.001)))
-			r = s.get(url=GEOCODE_URL, params=params, timeout=15)
+			r = s.get(url=GEOCODE_URL, params=params, timeout=5)
 		
 		if r.status_code == requests.codes.ok:
 			# Results will be in JSON format - convert to dict using requests functionality
