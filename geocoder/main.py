@@ -98,18 +98,16 @@ def get_latlonrow(x):
 	logging.info(f"{index}")
 	if pd.notna(row['address']) or (row['address'] in ('', ' ')):
 		address = get_google_results(row['address'])
-		address["row"] = row['row']
-		return address
+		return {**address, **row}
 	else:
 		return  {
+				**row,
 				"matched_address" : None,
 				"lat": None,
 				"lon": None,
 				"match": False,
-				"address": None,
 				"number_of_results": None,
-				"status":"Address value not available",
-				"row": row['row']
+				"status":"Address value not available"
 			}
 
 def geocoding(data):
@@ -188,8 +186,9 @@ def geocoder(request):
 				if len(data) == 0:
 					return (serialize_error(f'The file is empty'), 500, headers)
 
-				if len(data) > 1000:
-					return (serialize_error(f'Row number should be less or equal to 1000'), 500, headers)
+				if len(data) > 500:
+					dataSize = len(data)
+					return (serialize_error(f'Row number should be less or equal to 500, provided {dataSize} rows'), 500, headers)
 
 				
 				return (serialize_response(geocoding(data)), 200, headers)
